@@ -1,0 +1,26 @@
+
+###> symfony/framework-bundle ###
+nbclick_app/.env.local
+nbclick_app/.env
+nbclick_app/.env.local.php
+nbclick_app/.env.*.local
+nbclick_app/config/secrets/prod/prod.decrypt.private.php
+nbclick_app/public/bundles/
+nbclick_app/var/
+nbclick_app/vendor/
+###< symfony/framework-bundle ###
+
+###> phpunit/phpunit ###
+nbclick_app/phpunit.xml
+nbclick_app/.phpunit.result.cache
+###< phpunit/phpunit ###
+
+###> symfony/phpunit-bridge ###
+nbclick_app.phpunit.result.cache
+nbclick_app/phpunit.xml
+###< symfony/phpunit-bridge ###
+
+###> symfony/asset-mapper ###
+nbclick_app/public/assets/
+nbclick_app/assets/vendor/
+###< symfony/asset-mapper ###
