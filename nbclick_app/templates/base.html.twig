@@ -35,20 +35,7 @@
 					<!-- Navbar links -->
 
 					<div class="collapse navbar-collapse" id="navbarNav">
-						<ul class="navbar-nav ms-auto">
-							<li class="nav-item">
-								<a class="nav-link" href="{{ path('app_main') }}">Home</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" href="{{ path('app_matchs') }}">Matchs</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" href="#">Bets</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" href="#">Profile</a>
-							</li>
-						</ul>
+					
 					{% if app.user %}
 
 
@@ -58,19 +45,19 @@
 									<a class="nav-link" href="{{path('app_main')}}">Home</a>
 								</li>
 								<li class="nav-item">
-									<a class="nav-link" href="#">Team</a>
+									<a class="nav-link" href="{{ path('app_matchs') }}">Matchs</a>
 								</li>
 								<li class="nav-item">
 									<a class="nav-link" href="#">Bets</a>
 								</li>
 								<li class="nav-item">
-									<a class="nav-link" href="#">Profile</a>
+									<a class="nav-link" href="{{path('app_user_show')}}">Profile</a>
 								</li>
 							</ul>
 
 							<!-- Buttons -->
 							<div class="d-flex">
-								<button class="btn btn-primary me-2" type="button">Solde</button>
+								<a href="{{path('app_user_edit')}}"><button class="btn btn-primary me-2" type="button">{{app.user.cashBalanceUser}} $</button></a>
 								<a href="{{path('app_logout')}}"><button class="btn btn-danger" type="button">Logout</button></a>
 							</div>
 						</div>
@@ -83,7 +70,7 @@
 									<a class="nav-link" href="{{path('app_main')}}">Home</a>
 								</li>
 								<li class="nav-item">
-									<a class="nav-link" href="#">Teams</a>
+									<a class="nav-link" href="{{ path('app_matchs') }}">Matchs</a>
 								</li>
 						
 							</ul>

@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}User{% endblock %}
+
+{% block body %}
+    <h1>My profile</h1>
+
+    <table class="table">
+        <tbody>
+
+            <tr>
+                <th>Email</th>
+                <td>{{ user.email }}</td>
+            </tr>
+
+            <tr>
+                <th>Name</th>
+                <td>{{ user.nameUser }}</td>
+            </tr>
+            <tr>
+                <th>First name</th>
+                <td>{{ user.firstNameUser }}</td>
+            </tr>
+            <tr>
+                <th>Credits</th>
+                <td>{{ user.cashBalanceUser }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+   <a href="{{path('app_user_edit')}}"><button class="btn btn-light">Update my informations / add credits</button></a> 
+
+{% endblock %}
