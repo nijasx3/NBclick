@@ -33,6 +33,7 @@
 					</button>
 
 					<!-- Navbar links -->
+
 					<div class="collapse navbar-collapse" id="navbarNav">
 						<ul class="navbar-nav ms-auto">
 							<li class="nav-item">
@@ -48,13 +49,51 @@
 								<a class="nav-link" href="#">Profile</a>
 							</li>
 						</ul>
+					{% if app.user %}
 
-						<!-- Buttons -->
-						<div class="d-flex">
-							<button class="btn btn-primary me-2" type="button">Solde</button>
-							<button class="btn btn-danger" type="button">Logout</button>
+
+						<div class="collapse navbar-collapse" id="navbarNav">
+							<ul class="navbar-nav ms-auto">
+								<li class="nav-item">
+									<a class="nav-link" href="{{path('app_main')}}">Home</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" href="#">Team</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" href="#">Bets</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" href="#">Profile</a>
+								</li>
+							</ul>
+
+							<!-- Buttons -->
+							<div class="d-flex">
+								<button class="btn btn-primary me-2" type="button">Solde</button>
+								<a href="{{path('app_logout')}}"><button class="btn btn-danger" type="button">Logout</button></a>
+							</div>
 						</div>
-					</div>
+						{% else %}
+
+
+						<div class="collapse navbar-collapse" id="navbarNav">
+							<ul class="navbar-nav ms-auto">
+								<li class="nav-item">
+									<a class="nav-link" href="{{path('app_main')}}">Home</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" href="#">Teams</a>
+								</li>
+						
+							</ul>
+
+							<!-- Buttons -->
+							<div class="d-flex">
+								<a href="{{path('app_login')}}"><button class="btn btn-primary me-2" type="button">Login</button></a>
+							</div>
+						</div>
+					{% endif %}
 				</div>
 			</nav>
 
