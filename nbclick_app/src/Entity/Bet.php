@@ -33,6 +33,9 @@ class Bet
     #[ORM\JoinColumn(nullable: false)]
     private ?User $id_user = null;
 
+    #[ORM\Column]
+    private ?bool $paid_bet = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -106,6 +109,18 @@ class Bet
     public function setIdUser(?User $id_user): static
     {
         $this->id_user = $id_user;
+
+        return $this;
+    }
+
+    public function isPaidBet(): ?bool
+    {
+        return $this->paid_bet;
+    }
+
+    public function setPaidBet(bool $paid_bet): static
+    {
+        $this->paid_bet = $paid_bet;
 
         return $this;
     }
