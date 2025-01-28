@@ -16,26 +16,32 @@ final class UserController extends AbstractController
 {
 
     // GET informations about current user
-    #[Route('/{id}', name: 'app_user_show', methods: ['GET'])]
-    public function show(User $user): Response
+    #[Route('/user/profile', name: 'app_user_show', methods: ['GET'])]
+    public function show(): Response
     {
-        
+        $user= $this->getUser();
+
+        //dd($user);
+
         return $this->render('user/show.html.twig', [
             'user' => $user,
         ]);
     }
 
-    // update basic informations about user
-    #[Route('/{id}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, User $user, EntityManagerInterface $entityManager): Response
+    // update informations about user on their profile
+    #[Route('/user/update', name: 'app_user_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, EntityManagerInterface $entityManager): Response
     {
+
+        $user= $this->getUser();
+
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_user_show', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('user/edit.html.twig', [
@@ -44,5 +50,4 @@ final class UserController extends AbstractController
         ]);
     }
 
-    // update credit balance of user account
 }
