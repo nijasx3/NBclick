@@ -23,8 +23,8 @@
 					class="container-fluid">
 					<!-- Logo -->
 					<a class="navbar-brand" href="#">
-						<img src="logo.png" alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
-						MyLogo
+						<img src="{{ asset('img/logo.png') }}" alt="Logo" width="50" height="50" class="d-inline-block align-text-center">
+						NBClick
 					</a>
 
 					<!-- Toggler for mobile view -->
@@ -33,7 +33,24 @@
 					</button>
 
 					<!-- Navbar links -->
+
+					<div class="collapse navbar-collapse" id="navbarNav">
+						<ul class="navbar-nav ms-auto">
+							<li class="nav-item">
+								<a class="nav-link" href="{{ path('app_main') }}">Home</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="{{ path('app_matchs') }}">Matchs</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="#">Bets</a>
+							</li>
+							<li class="nav-item">
+								<a class="nav-link" href="#">Profile</a>
+							</li>
+						</ul>
 					{% if app.user %}
+
 
 						<div class="collapse navbar-collapse" id="navbarNav">
 							<ul class="navbar-nav ms-auto">
