@@ -35,58 +35,66 @@
 					<!-- Navbar links -->
 
 					<div class="collapse navbar-collapse" id="navbarNav">
-					
-					{% if app.user %}
+
+						{% if app.user %}
 
 
-						<div class="collapse navbar-collapse" id="navbarNav">
-							<ul class="navbar-nav ms-auto">
-								<li class="nav-item">
-									<a class="nav-link" href="{{path('app_main')}}">Home</a>
-								</li>
-								<li class="nav-item">
-									<a class="nav-link" href="{{ path('app_matchs') }}">Matchs</a>
-								</li>
-								<li class="nav-item">
-									<a class="nav-link" href="#">Bets</a>
-								</li>
-								<li class="nav-item">
-									<a class="nav-link" href="{{path('app_user_show')}}">Profile</a>
-								</li>
-							</ul>
+							<div class="collapse navbar-collapse" id="navbarNav">
+								<ul class="navbar-nav ms-auto">
+									<li class="nav-item">
+										<a class="nav-link" href="{{path('app_main')}}">Home</a>
+									</li>
+									<li class="nav-item">
+										<a class="nav-link" href="{{ path('app_matchs') }}">Matchs</a>
+									</li>
+									<li class="nav-item">
+										<a class="nav-link" href="{{ path('app_matchs_done') }}">Bets</a>
+									</li>
+									<li class="nav-item">
+										<a class="nav-link" href="{{path('app_user_show')}}">Profile</a>
+									</li>
+								</ul>
 
-							<!-- Buttons -->
-							<div class="d-flex">
-								<a href="{{path('app_user_edit')}}"><button class="btn btn-primary me-2" type="button">{{app.user.cashBalanceUser}} $</button></a>
-								<a href="{{path('app_logout')}}"><button class="btn btn-danger" type="button">Logout</button></a>
+								<!-- Buttons -->
+								<div class="d-flex">
+									<a href="{{path('app_user_edit')}}">
+										<button class="btn btn-primary me-2" type="button">{{app.user.cashBalanceUser}}
+											$</button>
+									</a>
+									<a href="{{path('app_logout')}}">
+										<button class="btn btn-danger" type="button">Logout</button>
+									</a>
+								</div>
 							</div>
-						</div>
 						{% else %}
 
 
-						<div class="collapse navbar-collapse" id="navbarNav">
-							<ul class="navbar-nav ms-auto">
-								<li class="nav-item">
-									<a class="nav-link" href="{{path('app_main')}}">Home</a>
-								</li>
-								<li class="nav-item">
-									<a class="nav-link" href="{{ path('app_matchs') }}">Matchs</a>
-								</li>
-						
-							</ul>
+							<div class="collapse navbar-collapse" id="navbarNav">
+								<ul class="navbar-nav ms-auto">
+									<li class="nav-item">
+										<a class="nav-link" href="{{path('app_main')}}">Home</a>
+									</li>
+									<li class="nav-item">
+										<a class="nav-link" href="{{ path('app_matchs') }}">Matchs</a>
+									</li>
 
-							<!-- Buttons -->
-							<div class="d-flex">
-								<a href="{{path('app_login')}}"><button class="btn btn-primary me-2" type="button">Login</button></a>
+								</ul>
+
+								<!-- Buttons -->
+								<div class="d-flex">
+									<a href="{{path('app_login')}}">
+										<button class="btn btn-primary me-2" type="button">Login</button>
+									</a>
+								</div>
 							</div>
-						</div>
-					{% endif %}
-				</div>
-			</nav>
+						{% endif %}
+					</div>
+				</nav>
 
-		</header>
-		{% block body %}{% endblock %}
-		<footer>HERE IS THE FOOTER</footer>
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+			</header>
+			{% block body %}{% endblock %}
+			<footer>HERE IS THE FOOTER</footer>
+			<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+		</body>
 	</body>
 </html>

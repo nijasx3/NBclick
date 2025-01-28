@@ -8,6 +8,31 @@ use Symfony\Component\Routing\Annotation\Route;
 
 final class MatchsController extends AbstractController
 {
+    private function fetchTeamColors(): array
+    {
+        $apiKey = $_ENV['SPORTRADAR_API_KEY'];
+
+        $url = 'https://api.sportradar.com/nba/trial/v8/en/league/hierarchy.json?api_key=' . $apiKey;
+        $response = file_get_contents($url);
+        $data = json_decode($response, true);
+
+        $teams = [];
+        foreach ($data['conferences'] as $conference) {
+            foreach ($conference['divisions'] as $division) {
+                foreach ($division['teams'] as $team) {
+                    $teams[$team['id']] = [
+                        'colors' => [
+                            'primary' => $team['team_colors'][0]['hex_color'] ?? '#000000',
+                            'secondary' => $team['team_colors'][1]['hex_color'] ?? '#FFFFFF',
+                        ],
+                    ];
+                }
+            }
+        }
+
+        return $teams;
+    }
+
     #[Route('/matchs/{date}', name: 'app_matchs', requirements: ['date' => '\d{4}/\d{2}/\d{2}'])]
     public function index(string $date = '2025/01/26'): Response
     {
@@ -33,46 +58,79 @@ final class MatchsController extends AbstractController
             $game['away']['team_colors'] = $teamColors[$awayTeamId]['colors'] ?? ['primary' => '#000000', 'secondary' => '#FFFFFF'];
         }
 
-
         $currentDate = \DateTime::createFromFormat('Y/m/d', $date);
-        $previousDate = $currentDate->modify('-1 day')->format('Y/m/d');
-        $nextDate = $currentDate->modify('+2 day')->format('Y/m/d');
+        $today = new \DateTime('today');
 
 
-        $formattedDate = $currentDate->format('d F Y');
+        $previousDate = (clone $currentDate)->modify('-1 day');
+        $nextDate = (clone $currentDate)->modify('+1 day');
+
+        $isPreviousDisabled = $previousDate < $today;
 
         return $this->render('matchs/index.html.twig', [
             'games' => $gamesData['games'] ?? [],
-            'currentDate' => $formattedDate,
-            'previousDate' => $previousDate,
-            'nextDate' => $nextDate,
+            'currentDate' => $currentDate->format('d F Y'),
+            'previousDate' => $previousDate->format('Y/m/d'),
+            'nextDate' => $nextDate->format('Y/m/d'),
+            'isPreviousDisabled' => $isPreviousDisabled,
         ]);
     }
 
 
-
-    private function fetchTeamColors(): array
+    #[Route('/matchs-done/{date}', name: 'app_matchs_done', requirements: ['date' => '\d{4}/\d{2}/\d{2}'])]
+    public function matchDone(string $date = '2025/01/26'): Response
     {
         $apiKey = $_ENV['SPORTRADAR_API_KEY'];
 
-        $url = 'https://api.sportradar.com/nba/trial/v8/en/league/hierarchy.json?api_key=' . $apiKey;
-        $response = file_get_contents($url);
-        $data = json_decode($response, true);
 
-        $teams = [];
-        foreach ($data['conferences'] as $conference) {
-            foreach ($conference['divisions'] as $division) {
-                foreach ($division['teams'] as $team) {
-                    $teams[$team['id']] = [
-                        'colors' => [
-                            'primary' => $team['team_colors'][0]['hex_color'] ?? '#000000',
-                            'secondary' => $team['team_colors'][1]['hex_color'] ?? '#FFFFFF',
-                        ],
-                    ];
-                }
-            }
+        $gamesUrl = 'https://api.sportradar.com/nba/trial/v8/en/games/' . $date . '/schedule.json?api_key=' . $apiKey;
+        $gamesResponse = file_get_contents($gamesUrl);
+        $gamesData = json_decode($gamesResponse, true);
+
+
+        if (!isset($gamesData['games'])) {
+            throw $this->createNotFoundException('No games found for the provided date.');
+        }
+        dump($gamesData['games']);
+
+        $teamColors = $this->fetchTeamColors();
+
+
+        $finishedGames = array_filter($gamesData['games'], function ($game) {
+            return $game['status'] === 'closed';
+        });
+
+
+        foreach ($finishedGames as &$game) {
+            $homeTeamId = $game['home']['id'];
+            $awayTeamId = $game['away']['id'];
+
+            $game['home']['team_colors'] = $teamColors[$homeTeamId]['colors'] ?? ['primary' => '#000000', 'secondary' => '#FFFFFF'];
+            $game['away']['team_colors'] = $teamColors[$awayTeamId]['colors'] ?? ['primary' => '#000000', 'secondary' => '#FFFFFF'];
         }
 
-        return $teams;
+
+        $currentDate = \DateTime::createFromFormat('Y/m/d', $date);
+        $today = new \DateTime('today');
+
+
+        if ($currentDate >= $today) {
+            throw $this->createNotFoundException('No finished games available for future or current dates.');
+        }
+
+        $previousDate = (clone $currentDate)->modify('-1 day');
+        $nextDate = (clone $currentDate)->modify('+1 day');
+
+
+        $isPreviousDisabled = $previousDate < new \DateTime('2024-01-01'); // Limite basse fixée
+
+
+        return $this->render('matchs/done.html.twig', [
+            'games' => $finishedGames,
+            'currentDate' => $currentDate->format('d F Y'),
+            'previousDate' => $previousDate->format('Y/m/d'),
+            'nextDate' => $nextDate->format('Y/m/d'),
+            'isPreviousDisabled' => $isPreviousDisabled,
+        ]);
     }
 }

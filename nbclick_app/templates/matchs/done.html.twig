@@ -10,7 +10,7 @@
 
 	<div class="pagination d-flex justify-content-between mt-4 mb-4">
 		{% if not isPreviousDisabled %}
-			<a href="{{ path('app_matchs', { date: previousDate }) }}" class="btn btn-light">
+			<a href="{{ path('app_matchs_done', { date: previousDate }) }}" class="btn btn-light">
 				Jour précédent
 			</a>
 		{% else %}
@@ -19,12 +19,10 @@
 			</button>
 		{% endif %}
 
-
-		<a href="{{ path('app_matchs', { date: nextDate }) }}" class="btn btn-light">
+		<a href="{{ path('app_matchs_done', { date: nextDate }) }}" class="btn btn-light">
 			Jour suivant
 		</a>
 	</div>
-
 
 	{% if games is empty %}
 		<p class="text-muted text-center">Aucun match trouvé.</p>
@@ -32,7 +30,7 @@
 		<div class="row g-4 mb-4 ml-2 mr-2">
 			{% for game in games %}
 				<div class="col-md-6 col-lg-4">
-					<div class="card shadow" style="height:250px">
+					<div class="card shadow" style="height:280px">
 						<div class="card-header text-center" style="background-color: #D6D6D7">
 							{{ game.scheduled|date('d/m/Y H:i') }}
 						</div>
@@ -41,6 +39,9 @@
 								<div>
 									<div class="rounded-circle mx-auto mb-2" style="width: 50px; height: 50px; background: linear-gradient(45deg, {{ game.home.team_colors.primary }}, {{ game.home.team_colors.secondary }});"></div>
 									<p class="fw-bold">{{ game.home.name }}</p>
+									{% if game.status == 'closed' %}
+										<p class="text-success fw-bold">{{ game.home_points }}</p>
+									{% endif %}
 								</div>
 
 								<div>
@@ -50,13 +51,17 @@
 								<div>
 									<div class="rounded-circle mx-auto mb-2" style="width: 50px; height: 50px; background: linear-gradient(45deg, {{ game.away.team_colors.primary }}, {{ game.away.team_colors.secondary }});"></div>
 									<p class="fw-bold">{{ game.away.name }}</p>
+									{% if game.status == 'closed' %}
+										<p class="text-success fw-bold">{{ game.away_points }}</p>
+									{% endif %}
 								</div>
 							</div>
 
-							<div class="d-flex justify-content-between ml-2 mr-2">
-								<button class="btn btn-primary">{{game.home.cote}}</button>
-								<button class="btn btn-danger">{{game.away.cote}}</button>
-							</div>
+							{% if game.status == 'closed' %}
+								<p class="text-muted fw-bold">Match terminé</p>
+							{% endif %}
+
+
 						</div>
 					</div>
 				</div>
