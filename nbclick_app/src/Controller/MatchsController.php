@@ -19,9 +19,15 @@ final class MatchsController extends AbstractController
 
         $teamColors = $this->fetchTeamColors();
 
+        $cotes = [0.98,1.21, 1.36, 1.59, 2.01, 2.68, 3.01, 3.23, 3.87, 3.99, 4.05];
+
         foreach ($gamesData['games'] as &$game) {
             $homeTeamId = $game['home']['id'];
             $awayTeamId = $game['away']['id'];
+
+            $home_cote = $cotes[array_rand($cotes, 1)];
+            $game['home']['cote']=  $home_cote;
+            $game['away']['cote']= (5-$home_cote);
 
             $game['home']['team_colors'] = $teamColors[$homeTeamId]['colors'] ?? ['primary' => '#000000', 'secondary' => '#FFFFFF'];
             $game['away']['team_colors'] = $teamColors[$awayTeamId]['colors'] ?? ['primary' => '#000000', 'secondary' => '#FFFFFF'];
