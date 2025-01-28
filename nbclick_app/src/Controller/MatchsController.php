@@ -8,19 +8,16 @@ use Symfony\Component\Routing\Annotation\Route;
 
 final class MatchsController extends AbstractController
 {
-    #[Route('/matchs', name: 'app_matchs')]
-    public function index(): Response
+    #[Route('/matchs/{date}', name: 'app_matchs', requirements: ['date' => '\d{4}/\d{2}/\d{2}'])]
+    public function index(string $date = '2025/01/26'): Response
     {
         $apiKey = $_ENV['SPORTRADAR_API_KEY'];
 
-
-        $gamesUrl = 'https://api.sportradar.com/nba/trial/v8/en/games/2025/01/26/schedule.json?api_key=' . $apiKey;
+        $gamesUrl = 'https://api.sportradar.com/nba/trial/v8/en/games/' . $date . '/schedule.json?api_key=' . $apiKey;
         $gamesResponse = file_get_contents($gamesUrl);
         $gamesData = json_decode($gamesResponse, true);
 
-
         $teamColors = $this->fetchTeamColors();
-
 
         foreach ($gamesData['games'] as &$game) {
             $homeTeamId = $game['home']['id'];
@@ -30,10 +27,23 @@ final class MatchsController extends AbstractController
             $game['away']['team_colors'] = $teamColors[$awayTeamId]['colors'] ?? ['primary' => '#000000', 'secondary' => '#FFFFFF'];
         }
 
+
+        $currentDate = \DateTime::createFromFormat('Y/m/d', $date);
+        $previousDate = $currentDate->modify('-1 day')->format('Y/m/d');
+        $nextDate = $currentDate->modify('+2 day')->format('Y/m/d');
+
+
+        $formattedDate = $currentDate->format('d F Y');
+
         return $this->render('matchs/index.html.twig', [
-            'games' => $gamesData['games'],
+            'games' => $gamesData['games'] ?? [],
+            'currentDate' => $formattedDate,
+            'previousDate' => $previousDate,
+            'nextDate' => $nextDate,
         ]);
     }
+
+
 
     private function fetchTeamColors(): array
     {
