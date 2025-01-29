@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Form\BetType;
 use App\Repository\BetRepository;
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -19,35 +20,86 @@ use function PHPUnit\Framework\isEmpty;
 final class BetController extends AbstractController
 {
     #[Route('/bets', name: 'app_bets')]
-    public function index(BetRepository $betRepository): Response
+    public function index(BetRepository $betRepository, EntityManagerInterface $entityManager): Response
     {
-        
-        // récuperer tous les paris
+
+        $apiKey = $_ENV['SPORTRADAR_API_KEY'];
+
+        // find latest season
+        $seasonUrl = 'https://api.sportradar.com/nba/trial/v8/en/league/seasons.json?api_key=' . $apiKey;
+        $seasonRes = file_get_contents($seasonUrl);
+        $seasonData = json_decode($seasonRes, true);
+
+        function getLatestSeason(array $seasons)
+        {
+            return array_reduce($seasons, function ($latest, $season) {
+                return ($latest === null || $season['year'] > $latest['year']) ? $season : $latest;
+            }, null);
+        }
+
+        $latestSeason = getLatestSeason($seasonData['seasons']);
+
+
+        // find games of the season
+
+        $gamesUrl = 'https://api.sportradar.com/nba/trial/v8/en/games/' . $latestSeason['year'] . '/REG/schedule.json?api_key=' . $apiKey;
+        $gamesResponse = file_get_contents($gamesUrl);
+        $gamesData = json_decode($gamesResponse, true);
+
+
+        // get user's bets
 
         /** @var User */
         $user = $this->getUser();
         $bets = $user->getBets();
 
+
+        function findGameById(array $games, string $id)
+        {
+            foreach ($games as $game) {
+                if ($game['id'] === $id) {
+                    return $game; // Retourne directement le match trouvé
+                }
+            }
+            return null; // Retourne null si aucun match n'est trouvé
+        }
+
+
         $info_bets = [];
+
+
         foreach ($bets as $bet) {
 
-            // $match = $bet->getIdMatch();
-            // $apiKey = $_ENV['SPORTRADAR_API_KEY'];
-            // $gamesUrl = 'https://api.sportradar.com/nba/trial/v8/en/games/' . $match . '/summary.json?api_key=' . $apiKey;
-            // $gamesResponse = file_get_contents($gamesUrl);
-            // $gamesData = json_decode($gamesResponse, true);
+            $match = $bet->getIdMatch();
 
-            array_push($info_bets, ['bet' => $bet, 'match' => '$gamesData']);
-           
+            $info_match = findGameById($gamesData['games'], $match);
+
+            array_push($info_bets, ['bet' => $bet, 'match' => $info_match]);
+
+            foreach ($gamesData['games'] as $gameZ) {
+                if ($gameZ['status'] === 'closed') {
+                    $homePoints = $gameZ['home_points'];
+                    $awayPoints = $gameZ['away_points'];
+                    $betOn = $bet->getBetBet(); // L'équipe sur laquelle l'utilisateur a parié
+
+                    // Déterminer le gagnant
+                    $winner = $homePoints > $awayPoints ? 'home' : 'away';
+                    if ($betOn === $winner) {
+                        $bet->setResultBet('gagné');
+                    } else {
+                        $bet->setResultBet('perdu');
+                    }
+
+                    $entityManager->persist($bet);
+                }
+            }
         }
-        
 
-        // récuperer paris en cours et requête par id sur api
-
-        // récupérer paris terminés et les alimenter avec partie Simon sur les match terminés
+        $entityManager->flush();
 
         return $this->render('bet/index.html.twig', [
-            'controller_name' => 'BetController', 'bets'=>$info_bets
+            'controller_name' => 'BetController',
+            'bets' => $info_bets
         ]);
     }
 
@@ -130,5 +182,4 @@ final class BetController extends AbstractController
             'cote' => $cote,
         ]);
     }
-
 }
