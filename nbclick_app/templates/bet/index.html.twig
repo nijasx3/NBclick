@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello BetController!{% endblock %}
+
+{% block body %}
+   {% if bets is not empty %}
+        <ul>
+            {% for item in bets %}
+                <li>
+                    <h3>Bet Details</h3>
+                    <p><strong>Bet ID:</strong> {{ item.bet.id }}</p>
+                    <p><strong>Bet Type:</strong> {{ item.bet.betBet }}</p>
+                    <p><strong>Amount:</strong> ${{ item.bet.priceBet }}</p>
+                    
+                   
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No bets available.</p>
+    {% endif %}
+
+
+<style>
+    body{
+        color : white;
+    }
+</style>
+{% endblock %}
