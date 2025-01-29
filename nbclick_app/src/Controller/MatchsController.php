@@ -104,8 +104,9 @@ final class MatchsController extends AbstractController
 
 
     #[Route('/matchs-done/{date}', name: 'app_matchs_done', requirements: ['date' => '\d{4}/\d{2}/\d{2}'])]
-    public function matchDone(string $date = '2025/01/26'): Response
+    public function matchDone(string $date = null): Response
     {
+        $date = $date ?? (new \DateTime())->modify('-1 day')->format('Y/m/d');
         $apiKey = $_ENV['SPORTRADAR_API_KEY'];
 
         $gamesUrl = 'https://api.sportradar.com/nba/trial/v8/en/games/' . $date . '/schedule.json?api_key=' . $apiKey;

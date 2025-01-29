@@ -19,13 +19,19 @@
 			</button>
 		{% endif %}
 
-		<a href="{{ path('app_matchs_done', {date: nextDate}) }}" class="btn btn-primary" {% if isNextDisabled %} disabled {% endif %}>
-			Jour suivant
-		</a>
+		{% if not isNextDisabled %}
+			<a href="{{ path('app_matchs_done', { date: nextDate }) }}" class="btn btn-light">
+				Jour suivant
+			</a>
+		{% else %}
+			<button class="btn btn-black disabled" aria-disabled="true">
+				Jour suivant
+			</button>
+		{% endif %}
 	</div>
 
 	{% if games is empty %}
-		<p class="text-muted text-center">Aucun match trouvé.</p>
+		<p class="text-center" style='color:#ffffff'>Aucun match trouvé.</p>
 	{% else %}
 		<div class="row g-4 mb-4 ml-2 mr-2">
 			{% for game in games %}
@@ -41,7 +47,7 @@
 
 								<div>
 									<div class="rounded-circle mx-auto mb-2" style="width: 50px; height: 50px;
-																			background: linear-gradient(45deg, {{ game.home.team_colors.primary }}, {{ game.home.team_colors.secondary }});"></div>
+																																																											background: linear-gradient(45deg, {{ game.home.team_colors.primary }}, {{ game.home.team_colors.secondary }});"></div>
 									<p class="{% if homeWon %}fw-bold{% endif %}">{{ game.home.name }}</p>
 									{% if game.status == 'closed' %}
 										<p class="{% if homeWon %}fw-bold text-success{% else %}text-danger{% endif %}">
@@ -56,7 +62,7 @@
 
 								<div>
 									<div class="rounded-circle mx-auto mb-2" style="width: 50px; height: 50px;
-																			background: linear-gradient(45deg, {{ game.away.team_colors.primary }}, {{ game.away.team_colors.secondary }});"></div>
+																																																											background: linear-gradient(45deg, {{ game.away.team_colors.primary }}, {{ game.away.team_colors.secondary }});"></div>
 									<p class="{% if awayWon %}fw-bold{% endif %}">{{ game.away.name }}</p>
 									{% if game.status == 'closed' %}
 										<p class="{% if awayWon %}fw-bold text-success{% else %}text-danger{% endif %}">

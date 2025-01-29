@@ -8,7 +8,7 @@
 		<h1 class="fw-bold">Bienvenue sur
 			<span class="text-primary">NBClick</span>
 			!</h1>
-		<p class="lead text-muted">Pariez sur les matchs NBA et suivez les résultats en direct.</p>
+		<p class="lead" style='color:#ffffff'>Pariez sur les matchs NBA et suivez les résultats en direct.</p>
 
 		<div class="row mt-5">
 			<div class="col-md-6">
@@ -26,7 +26,7 @@
 						{% if app.user %}
 							<h5 class="card-title fw-bold">💵 💵 Mes paris</h5>
 							<p class="card-text">Consultez vos paris en cours et vos gains potentiels.</p>
-							<a href="#" class="btn btn-warning">Voir mes paris</a>
+							<a href="{{path('app_bets')}}" class="btn btn-warning">Voir mes paris</a>
 						{% else %}
 							<h5 class="card-title fw-bold">🔐 Rejoignez-nous</h5>
 							<p class="card-text">Inscrivez-vous dès maintenant et commencez à parier !</p>
