@@ -19,7 +19,7 @@
 			</button>
 		{% endif %}
 
-		<a href="{{ path('app_matchs_done', { date: nextDate }) }}" class="btn btn-light">
+		<a href="{{ path('app_matchs_done', {date: nextDate}) }}" class="btn btn-primary" {% if isNextDisabled %} disabled {% endif %}>
 			Jour suivant
 		</a>
 	</div>
@@ -30,17 +30,23 @@
 		<div class="row g-4 mb-4 ml-2 mr-2">
 			{% for game in games %}
 				<div class="col-md-6 col-lg-4">
-					<div class="card shadow" style="height:280px">
+					<div class="card shadow" style="height:190px">
 						<div class="card-header text-center" style="background-color: #D6D6D7">
 							{{ game.scheduled|date('d/m/Y H:i') }}
 						</div>
 						<div class="card-body text-center">
 							<div class="d-flex justify-content-between align-items-center mb-3">
+								{% set homeWon = game.status == 'closed' and game.home_points > game.away_points %}
+								{% set awayWon = game.status == 'closed' and game.away_points > game.home_points %}
+
 								<div>
-									<div class="rounded-circle mx-auto mb-2" style="width: 50px; height: 50px; background: linear-gradient(45deg, {{ game.home.team_colors.primary }}, {{ game.home.team_colors.secondary }});"></div>
-									<p class="fw-bold">{{ game.home.name }}</p>
+									<div class="rounded-circle mx-auto mb-2" style="width: 50px; height: 50px;
+																			background: linear-gradient(45deg, {{ game.home.team_colors.primary }}, {{ game.home.team_colors.secondary }});"></div>
+									<p class="{% if homeWon %}fw-bold{% endif %}">{{ game.home.name }}</p>
 									{% if game.status == 'closed' %}
-										<p class="text-success fw-bold">{{ game.home_points }}</p>
+										<p class="{% if homeWon %}fw-bold text-success{% else %}text-danger{% endif %}">
+											{{ game.home_points }}
+										</p>
 									{% endif %}
 								</div>
 
@@ -49,23 +55,21 @@
 								</div>
 
 								<div>
-									<div class="rounded-circle mx-auto mb-2" style="width: 50px; height: 50px; background: linear-gradient(45deg, {{ game.away.team_colors.primary }}, {{ game.away.team_colors.secondary }});"></div>
-									<p class="fw-bold">{{ game.away.name }}</p>
+									<div class="rounded-circle mx-auto mb-2" style="width: 50px; height: 50px;
+																			background: linear-gradient(45deg, {{ game.away.team_colors.primary }}, {{ game.away.team_colors.secondary }});"></div>
+									<p class="{% if awayWon %}fw-bold{% endif %}">{{ game.away.name }}</p>
 									{% if game.status == 'closed' %}
-										<p class="text-success fw-bold">{{ game.away_points }}</p>
+										<p class="{% if awayWon %}fw-bold text-success{% else %}text-danger{% endif %}">
+											{{ game.away_points }}
+										</p>
 									{% endif %}
 								</div>
 							</div>
-
-							{% if game.status == 'closed' %}
-								<p class="text-muted fw-bold">Match terminé</p>
-							{% endif %}
-
-
 						</div>
 					</div>
 				</div>
 			{% endfor %}
+
 		</div>
 	{% endif %}
 {% endblock %}
