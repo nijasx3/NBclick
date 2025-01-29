@@ -96,6 +96,7 @@ final class BetController extends AbstractController
             $bet->setOddsBet($cote);
             $bet->setResultBet('en cours');
             $bet->setpaidBet(false);
+            $bet->setDateMatch($gamesData['scheduled']);
 
             $price = intval($bet->getPriceBet());
 

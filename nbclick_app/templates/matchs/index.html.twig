@@ -54,8 +54,8 @@
 							</div>
 
 							<div class="d-flex justify-content-around ml-2 mr-2">
-								<button class="btn btn-primary" style='width:150px'>{{game.home.cote}}</button>
-								<button class="btn btn-danger" style='width:150px'>{{game.away.cote}}</button>
+								<a href="{{ path('app_new_bet', {'id_match': game.id}) ~ '?team=home&cote=' ~ game.home.cote }}"><button class="btn btn-primary" style='width:150px'>{{game.home.cote}}</button></a>
+								<a href="{{ path('app_new_bet', {'id_match': game.id}) ~ '?team=away&cote=' ~ game.away.cote }}"><button class="btn btn-danger" style='width:150px'>{{game.away.cote}}</button></a>
 							</div>
 						</div>
 					</div>
