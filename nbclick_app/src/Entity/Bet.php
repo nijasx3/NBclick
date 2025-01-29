@@ -36,6 +36,9 @@ class Bet
     #[ORM\Column]
     private ?bool $paid_bet = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $date_match = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -121,6 +124,18 @@ class Bet
     public function setPaidBet(bool $paid_bet): static
     {
         $this->paid_bet = $paid_bet;
+
+        return $this;
+    }
+
+    public function getDateMatch(): ?string
+    {
+        return $this->date_match;
+    }
+
+    public function setDateMatch(string $date_match): static
+    {
+        $this->date_match = $date_match;
 
         return $this;
     }
