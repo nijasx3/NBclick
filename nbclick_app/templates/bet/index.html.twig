@@ -1,29 +1,109 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello BetController!{% endblock %}
+{% block title %}Mes Paris
+{% endblock %}
 
 {% block body %}
-   {% if bets is not empty %}
-        <ul>
-            {% for item in bets %}
-                <li>
-                    <h3>Bet Details</h3>
-                    <p><strong>Bet ID:</strong> {{ item.bet.id }}</p>
-                    <p><strong>Bet Type:</strong> {{ item.bet.betBet }}</p>
-                    <p><strong>Amount:</strong> ${{ item.bet.priceBet }}</p>
-                    
-                   
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No bets available.</p>
-    {% endif %}
+	<div class="container mt-5">
+		<h1 class="fw-bold text-center">📊 Mes Paris</h1>
+		<p class="lead text-center text-white">Pariez sur les matchs NBA et suivez les résultats en direct.</p>
 
+		{# Séparation des paris en cours et terminés #}
+		{% set ongoing_bets = bets|filter(item => item.match.status == 'scheduled') %}
+		{% set finished_bets = bets|filter(item => item.match.status == 'closed') %}
 
-<style>
-    body{
-        color : white;
-    }
-</style>
+		{# Affichage des paris en cours #}
+		{% if ongoing_bets is not empty %}
+			<h3 class="fw-bold">🕒 Mes paris en cours</h3>
+			<div class="row justify-content-center">
+				{% for item in ongoing_bets %}
+					<div class="col-md-6">
+						<div class="card shadow border-0 my-3">
+							<div class="card-body">
+								<h5 class="card-title fw-bold">🎲 Détails du pari</h5>
+								<p>
+									<strong>Date de la rencontre :</strong>
+									{{ item.match.scheduled }}</p>
+								<p>
+									<strong>Équipes :</strong>
+									{{ item.match.home.name }}
+									-
+									{{ item.match.away.name }}</p>
+								<p>
+									<strong>Pari :</strong>
+									{% if item.bet.betBet == 'home' %}
+										{{ item.match.home.name }}
+									{% else %}
+										{{ item.match.away.name }}
+									{% endif %}
+
+								</p>
+								<p>
+									<strong>Cote :</strong>
+									{{ item.bet.oddsBet }}</p>
+								<p>
+									<strong>Mise :</strong>
+									${{ item.bet.priceBet }}</p>
+								<p class="fw-bold text-success">💰 Gain potentiel: ${{ item.bet.oddsBet * item.bet.priceBet }}</p>
+							</div>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		{% else %}
+			<p class="text-center mt-4 text-muted">Aucun pari en cours.</p>
+		{% endif %}
+
+		{# Affichage des paris passés #}
+		{% if finished_bets is not empty %}
+			<h3 class="fw-bold mt-5">✅ Mes paris terminés</h3>
+			<div class="row justify-content-center">
+				{% for item in finished_bets %}
+					<div class="col-md-6">
+						<div class="card shadow border-0 my-3">
+							<div class="card-body">
+								<h5 class="card-title fw-bold">🎲 Détails du pari</h5>
+								<p>
+									<strong>Date de la rencontre :</strong>
+									{{ item.match.scheduled }}</p>
+								<p>
+									<strong>Équipes :</strong>
+									{{ item.match.home.name }}
+									-
+									{{ item.match.away.name }}</p>
+								<p>
+									<strong>Pari :</strong>
+									{% if item.bet.betBet == 'home' %}
+										{{ item.match.home.name }}
+									{% else %}
+										{{ item.match.away.name }}
+									{% endif %}
+
+								</p>
+								<p>
+									<strong>Cote :</strong>
+									{{ item.bet.oddsBet }}</p>
+								<p>
+									<strong>Mise :</strong>
+									${{ item.bet.priceBet }}</p>
+								<p class="fw-bold {% if item.bet.resultBet == 'gagné' %}text-success{% else %}text-danger{% endif %}">
+									💰 Résultat:
+									{{ item.bet.resultBet|capitalize }}
+								</p>
+
+								{# Bouton de récupération des gains si pari gagné et non encore payé #}
+								{% if item.bet.resultBet == 'gagné' and not item.bet.paidBet %}
+									<form action="{{ path('app_bet_claim', { id: item.bet.id }) }}" method="post">
+										<button type="submit" class="btn btn-success w-100">💰 Recevoir mes gains</button>
+									</form>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		{% else %}
+			<p class="text-center mt-4 text-muted">Aucun pari terminé.</p>
+		{% endif %}
+	</div>
 {% endblock %}

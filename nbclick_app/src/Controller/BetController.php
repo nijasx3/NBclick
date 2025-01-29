@@ -61,8 +61,9 @@ final class BetController extends AbstractController
                     return $game; // Retourne directement le match trouvé
                 }
             }
-            return null; // Retourne null si aucun match n'est trouvé
+            // return null; // Retourne null si aucun match n'est trouvé
         }
+
 
 
         $info_bets = [];
@@ -73,13 +74,14 @@ final class BetController extends AbstractController
             $match = $bet->getIdMatch();
 
             $info_match = findGameById($gamesData['games'], $match);
-
+            dump($info_match);
             array_push($info_bets, ['bet' => $bet, 'match' => $info_match]);
 
-            foreach ($gamesData['games'] as $gameZ) {
-                if ($gameZ['status'] === 'closed') {
-                    $homePoints = $gameZ['home_points'];
-                    $awayPoints = $gameZ['away_points'];
+            if ($info_match) {
+                if ($info_match['status'] === 'closed') {
+                    // Récupérer les scores
+                    $homePoints = $info_match['home_points'];
+                    $awayPoints = $info_match['away_points'];
                     $betOn = $bet->getBetBet(); // L'équipe sur laquelle l'utilisateur a parié
 
                     // Déterminer le gagnant
@@ -89,11 +91,12 @@ final class BetController extends AbstractController
                     } else {
                         $bet->setResultBet('perdu');
                     }
-
-                    $entityManager->persist($bet);
+                } else {
+                    $bet->setResultBet('en cours');
                 }
             }
         }
+
 
         $entityManager->flush();
 
@@ -181,5 +184,44 @@ final class BetController extends AbstractController
             'team' => $team_in_url,
             'cote' => $cote,
         ]);
+    }
+    #[Route('/bets/claim/{id}', name: 'app_bet_claim', methods: ['POST'])]
+    public function claimBet(EntityManagerInterface $entityManager, Bet $bet): Response
+    {
+        /** @var User */
+        $user = $this->getUser();
+
+
+        if ($bet->getIdUser() !== $user) {
+            throw $this->createAccessDeniedException('Ce pari ne vous appartient pas.');
+        }
+
+
+        if ($bet->isPaidBet()) {
+            $this->addFlash('warning', 'Les gains de ce pari ont déjà été récupérés.');
+            return $this->redirectToRoute('app_bets');
+        }
+
+
+        if ($bet->getResultBet() !== 'gagné') {
+            $this->addFlash('error', 'Ce pari n\'est pas gagnant.');
+            return $this->redirectToRoute('app_bets');
+        }
+
+
+        $gain = $bet->getOddsBet() * $bet->getPriceBet();
+
+
+        $user->setCashBalanceUser($user->getCashBalanceUser() + $gain);
+
+
+        $bet->setPaidBet(true);
+
+
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Vos gains ont été ajoutés à votre solde.');
+
+        return $this->redirectToRoute('app_bets');
     }
 }
