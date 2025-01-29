@@ -3,11 +3,16 @@
 {% block title %}Edit User{% endblock %}
 
 {% block body %}
-    <h1>Edit User</h1>
+    <h1>Modifier mes informations et ajouter du crédit</h1>
 
     {{ include('user/_form.html.twig', {'button_label': 'Update'}) }}
 
-    <a href="{{ path('app_user_show') }}">back to list</a>
+    <a href="{{ path('app_user_show') }}">Retour au profil</a>
 
+<style>
+body {
+    color : white;
+}
+</style>
    
 {% endblock %}
