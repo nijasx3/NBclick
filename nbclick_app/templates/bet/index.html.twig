@@ -86,6 +86,9 @@
 								<p>
 									<strong>Mise :</strong>
 									${{ item.bet.priceBet }}</p>
+								<p>
+									<strong>Gain potentiel:</strong>
+									${{ item.bet.priceBet * item.bet.oddsBet }}</p>
 								<p class="fw-bold {% if item.bet.resultBet == 'gagné' %}text-success{% else %}text-danger{% endif %}">
 									💰 Résultat:
 									{{ item.bet.resultBet|capitalize }}
