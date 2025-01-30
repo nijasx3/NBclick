@@ -32,19 +32,23 @@ jobs:
         run: ls -la
 
       - name: Move to project directory
-        run: cd nbclick_app && ls -la  
+        run: cd nbclick_app && ls -la
 
       - name: Install dependencies
         run: cd nbclick_app && composer install --no-progress --prefer-dist --optimize-autoloader
 
       - name: Wait for MySQL to be ready
-        run: sleep 10
+        run: |
+          while ! mysqladmin ping -h127.0.0.1 --silent; do
+            echo "Waiting for MySQL..."
+            sleep 2
+          done
 
       - name: Set up database
         run: |
-            cd nbclick_app
-            php bin/console doctrine:database:create --env=test
-            php bin/console doctrine:schema:update --force --env=test
+          cd nbclick_app
+          php bin/console doctrine:database:create --env=test
+          php bin/console doctrine:schema:update --force --env=test
 
       - name: Run tests
         run: cd nbclick_app && php bin/phpunit
