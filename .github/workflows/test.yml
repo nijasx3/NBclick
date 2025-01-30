@@ -35,8 +35,8 @@ jobs:
         run: cd nbclick_app && ls -la
 
       - name: Install dependencies
-        run: cd nbclick_app && composer install --no-progress --prefer-dist --optimize-autoloader
-
+        run: cd nbclick_app && composer install --no-progress --prefer-dist --optimize-autoloader && composer require --dev doctrine/doctrine-fixtures-bundle
+  
       - name: Wait for MySQL to be ready
         run: |
           while ! mysqladmin ping -h127.0.0.1 --silent; do
@@ -53,6 +53,7 @@ jobs:
           cd nbclick_app
           php bin/console doctrine:database:create --env=test
           php bin/console doctrine:schema:update --force --env=test
+          php bin/console doctrine:fixtures:load --env=test --no-interaction
 
       - name: Run tests
         run: cd nbclick_app && php bin/phpunit
