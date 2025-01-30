@@ -14,7 +14,7 @@ class BetControllerTest extends WebTestCase
 
         $userRepository = static::getContainer()->get(UserRepository::class);
 
-        $testUser = $userRepository->findOneByEmail('anaisjnse@outlook.fr');
+        $testUser = $userRepository->findOneByEmail($_ENV['USER_TEST']);
 
         $client->loginUser($testUser);
 
@@ -23,5 +23,4 @@ class BetControllerTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h1', 'Mes Paris');
     }
-
 }
