@@ -25,6 +25,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Copy .env.test to .env
+        run: cp nbclick_app/.env.test nbclick_app/.env
+
       - name: Verify repo structure
         run: ls -la
 
