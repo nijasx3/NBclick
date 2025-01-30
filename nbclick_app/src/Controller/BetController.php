@@ -106,7 +106,7 @@ final class BetController extends AbstractController
         ]);
     }
 
-    #[Route('/addbet/{id_match}', name: 'app_new_bet', methods: ['GET', 'POST'])]
+    #[Route('/bets/add/{id_match}', name: 'app_new_bet', methods: ['GET', 'POST'])]
     public function add(EntityManagerInterface $entityManager, string $id_match, Request $request): Response
     {
         // Récupérer les infos du match pour le récapitulatif
