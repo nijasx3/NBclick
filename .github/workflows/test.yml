@@ -37,6 +37,9 @@ jobs:
       - name: Install dependencies
         run: cd nbclick_app && composer install --no-progress --prefer-dist --optimize-autoloader
 
+      - name: Wait for MySQL to be ready
+        run: sleep 10
+
       - name: Set up database
         run: |
             cd nbclick_app
