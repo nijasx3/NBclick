@@ -44,6 +44,10 @@ jobs:
             sleep 2
           done
 
+      - name: Verify MySQL connection
+        run: |
+          mysql --host=127.0.0.1 --port=3306 -uroot -proot -e "SHOW DATABASES;"
+
       - name: Set up database
         run: |
           cd nbclick_app
