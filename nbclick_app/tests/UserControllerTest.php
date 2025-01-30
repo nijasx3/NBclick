@@ -15,7 +15,7 @@ class UserControllerTest extends WebTestCase
 
         $userRepository = static::getContainer()->get(UserRepository::class);
 
-        $testUser = $userRepository->findOneByEmail('anaisjnse@outlook.fr');
+        $testUser = $userRepository->findOneByEmail('sim@sim.fr');
 
         $client->loginUser($testUser);
 
@@ -45,7 +45,7 @@ class UserControllerTest extends WebTestCase
         $client = static::createClient();
         $userRepository = static::getContainer()->get(UserRepository::class);
 
-        $testUser = $userRepository->findOneByEmail('anaisjnse@outlook.fr');
+        $testUser = $userRepository->findOneByEmail('sim@sim.fr');
 
         $client->loginUser($testUser);
 
@@ -62,7 +62,7 @@ class UserControllerTest extends WebTestCase
         $client = static::createClient();
         $userRepository = static::getContainer()->get(UserRepository::class);
 
-        $testUser = $userRepository->findOneByEmail('anaisjnse@outlook.fr');
+        $testUser = $userRepository->findOneByEmail('sim@sim.fr');
 
         $client->loginUser($testUser);
 
