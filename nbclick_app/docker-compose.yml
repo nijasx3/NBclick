@@ -21,6 +21,13 @@ services:
       - .:/var/www/html
     depends_on:
       - db
+    entrypoint: [ "./entrypoint.sh" ]
+    command: [ "php-fpm" ]
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   nginx:
     image: nginx:alpine
