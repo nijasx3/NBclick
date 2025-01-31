@@ -10,7 +10,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-# Copier le script de tests
+# Copier le fichier run-tests.sh dans le conteneur
 COPY run-tests.sh /var/www/html/run-tests.sh
 
 # Rendre le script exécutable
