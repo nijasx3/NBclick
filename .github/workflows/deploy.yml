@@ -26,9 +26,12 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
+      - name: Debug - Vérifier Dockerfile
+        run: ls -la nbclick/docker/php/
+
       - name: Build Docker image
         run: |
-          docker build -t my-app .
+          docker build -t my-app -f nbclick/docker/php/Dockerfile nbclick/docker/php
 
       - name: Run Tests
         run: |
