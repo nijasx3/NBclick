@@ -35,7 +35,8 @@ jobs:
 
       - name: Run Tests
         run: |
-          docker run --rm --link mysql:mysql my-app ./run-tests.sh
+          docker run --rm --network=host my-app ./run-tests.sh
+
 
       - name: Push to Docker Hub
         run: |
