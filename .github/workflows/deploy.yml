@@ -1,0 +1,45 @@
+name: Deploy to Docker
+
+on:
+  push:
+    branches:
+      - main  
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root_password
+          MYSQL_DATABASE: app_db
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping --silent" --health-interval=10s --health-timeout=5s --health-retries=5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build Docker image
+        run: |
+          docker build -t my-app .
+
+      - name: Run Tests
+        run: |
+          docker run --rm --link mysql:mysql my-app ./run-tests.sh
+
+      - name: Push to Docker Hub
+        run: |
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker tag my-app my-docker-repo/my-app:latest
+          docker push my-docker-repo/my-app:latest
+
+      - name: Deploy to Server
+        run: |
+          ssh -i ${{ secrets.SSH_PRIVATE_KEY }} user@your-server "docker pull my-docker-repo/my-app:latest && docker-compose up -d"
