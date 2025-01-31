@@ -42,4 +42,5 @@ jobs:
 
       - name: Deploy to Server
         run: |
+          echo "Starting deployment..."
           ssh -i ${{ secrets.SSH_PRIVATE_KEY }} user@your-server "docker pull my-docker-repo/my-app:latest && docker-compose up -d"
