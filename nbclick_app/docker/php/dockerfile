@@ -1,23 +1,8 @@
 FROM php:8.2-fpm
-
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
     libzip-dev \
     && docker-php-ext-install zip pdo pdo_mysql
-
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
 WORKDIR /var/www/html
-
-# Copier tout le projet (y compris composer.json)
-COPY . /var/www/html
-
-# Installer les dépendances PHP via Composer
-RUN composer install
-
-# Copier le fichier run-tests.sh dans le conteneur
-COPY ./nbclick_app/docker/php/run-tests.sh /var/www/html/run-tests.sh
-
-# Rendre le script exécutable
-RUN chmod +x /var/www/html/run-tests.sh
