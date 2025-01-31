@@ -9,3 +9,9 @@ RUN apt-get update && apt-get install -y \
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
+
+# Copier le script de tests
+COPY run-tests.sh /var/www/html/run-tests.sh
+
+# Rendre le script exécutable
+RUN chmod +x /var/www/html/run-tests.sh
