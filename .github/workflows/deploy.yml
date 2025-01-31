@@ -31,7 +31,7 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t my-app -f nbclick/docker/php/Dockerfile nbclick/docker/php
+          docker build -t my-app -f nbclick_app/docker/php/Dockerfile nbclick_app/docker/php
 
       - name: Run Tests
         run: |
