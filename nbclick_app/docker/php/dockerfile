@@ -17,7 +17,7 @@ COPY . /var/www/html
 RUN composer install
 
 # Copier le fichier run-tests.sh dans le conteneur
-COPY docker/php/run-tests.sh /var/www/html/run-tests.sh
+COPY ./nbclick_app/docker/php/run-tests.sh /var/www/html/run-tests.sh
 
 # Rendre le script exécutable
 RUN chmod +x /var/www/html/run-tests.sh
